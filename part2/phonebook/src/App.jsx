@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import {Person} from './components/Person'
+import { Persons } from './components/Persons'
+import { Filter } from './components/Filter'
+import { PersonForm } from './components/PersonForm'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -12,57 +14,23 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
-  const addPerson = (event) => {
-    event.preventDefault()
-    const nameExists = persons.some(person => person.name === newName)
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1
-    }
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
-  }
-
-  const filteredPersons = searchTerm === ''
-    ? persons
-    : persons.filter(person =>
-      person.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-
   return (    
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          filter shown with <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} /> 
-        </div>
-      </form>
+      <Filter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={(event) => setNewName(event.target.value)} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={(event) => setNewNumber(event.target.value)} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <h2>Add a new</h2>
+      <PersonForm 
+        persons={persons}
+        newName={newName}
+        newNumber={newNumber}
+        setNewName={setNewName}
+        setNewNumber={setNewNumber}
+        setPersons={setPersons}
+      />
 
       <h2>Numbers</h2>
-      <div>
-        {filteredPersons.map(person => 
-          <Person key={person.id} name={person.name} number={person.number} />
-        )}
-      </div>
+      <Persons searchTerm={searchTerm} persons={persons} />
     </div>
   )
 }
